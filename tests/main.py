@@ -1,10 +1,16 @@
-from liteclass import Tableclass
+from liteclass import Tableclass, PrimaryKey
 
-@Tableclass
+@Tableclass()
 class Test:
-    a: str
-
+    i: PrimaryKey.int
+    f: float
+    s: str
+    b: bool
+    t: tuple
+    l: list
+    d: dict
+    
 
 
 test = Test()
-print(test.a)
+print(test)

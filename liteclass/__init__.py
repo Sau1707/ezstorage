@@ -1,7 +1,13 @@
-from ._init import NewInit
+from ._init import _Init
+from ._str import _Str
+from .constants import PrimaryKey
 
-def Tableclass(cls):
-    NewInit(cls)
+def Tableclass(db="data.db"):
 
-    return cls
+    def decorator(cls):
+        _Init(cls, db)
+        _Str(cls)
+
+        return cls 
+    return decorator
         
