@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "liteclass"
+name = "classdb"
 version = "0.0.1"
 authors = [
   { name="sau1707", email="lsaurwein@ethz.ch" },

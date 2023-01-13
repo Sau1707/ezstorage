@@ -1,16 +1,14 @@
-from liteclass import Tableclass, PrimaryKey
+from classdb import key
+from classdb.sqlite import sqlitedb, SqliteReader
 
-@Tableclass()
+@sqlitedb()
 class Test:
-    i: PrimaryKey.int
-    f: float
-    s: str
-    b: bool
-    t: tuple
-    l: list
-    d: dict
+    key: key.str
+    number: int
+    lista: list
+    dizi: dict
     
 
+test = SqliteReader(Test)
 
-test = Test()
 print(test)
