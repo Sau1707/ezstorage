@@ -23,7 +23,6 @@ def sqlitedb(db="data.db"):
                 else:
                     setattr(self, field_name, getDefaultValue(field_type))
             if not key: raise ValueError("Key of the record missing")
-            print(getattr(self, "indicator"))
             # Check and updathe the schema the first time the class is created
             if not hasattr(cls, "schema_attributes"):
                 schema = createSchema(self.__annotations__)
@@ -42,6 +41,7 @@ def sqlitedb(db="data.db"):
                 self.key_field_name = key
 
         def __str__(self):
+            return self.__repr__()
             values = {val: getattr(self, val) for val in self.schema_attributes}
             return json.dumps(values, indent=4)   
 
