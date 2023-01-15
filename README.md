@@ -1,6 +1,16 @@
 # Class db
 
-A python package to ealy handle a sql database data colum
+The goal of the package is to make ealy to load and save data for some small projects
+
+I'm currently working on the implementation for a sqlite database, but the goal is to make it work for the following:
+
+-   csv file
+-   json file
+-   sqlite
+-   MySQL
+-   more advanced databases
+
+<br />
 
 ## Getting started
 
