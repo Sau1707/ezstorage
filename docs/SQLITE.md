@@ -2,6 +2,8 @@
 
 Usefull to ealy read, write, edit and seach data in a sqlite database
 
+<br />
+
 ## Table of contents
 
 -   [Get started](#get-started)

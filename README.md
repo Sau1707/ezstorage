@@ -1,87 +1,52 @@
 # Class db
 
-The goal of the package is to make ealy to load and save data for some small projects
+The goal of the package is to make it as easy as possible to load and save data for small projects.
 
-I'm currently working on the implementation for a sqlite database, but the goal is to make it work for the following:
-
--   csv file
--   json file
--   sqlite
--   MySQL
--   more advanced databases
+See [Documentation](/docs/README.md) for all the technical informations.
 
 <br />
 
-## Getting started
-
-Import sqlite decorator and key object
-
-```python
-from classdb.sqlite import sqlite
-from classdb import key
-```
-
-Create a class with that decorator
-
-```python
-@sqlite()
-class Demo:
-    key: key.str
-    number: int
-    lista: list
-```
-
-You can pass the filename as a props to the decorator
-
-```python
-@sqlite("file.db")
-```
-
-Note:
-
--   By default the name is `data.db`
--   Currenty only sqlite is supported
--   The class name will be the same as the database table
--   The keys name will the the same as the database colums
-
-<br />
-
-## Types
-
-Each type map to a database type:
-
-```python
-- int: INTEGER
-- float: REAL
-- str: TEXT
-- bool: INTEGER
-- list: TEXT
-- dict: TEXT
-- tuple: TEXT
-- key.int: INTEGER PRIMARY KEY
-- key.str: TEXT PRIMARY KEY
-```
-
-Note:
-
--   If can be only a single key
--   `list, dict, tuple` are converted to string to save them
--   The database schema is checked the first time a class is initialized
-
-<br />
-
-## Usage
-
-To create a record in the table Demo (if no table exist, it will create one)
-
-```python
-d = Demo(key="10", number=10, lista=[1,2,3])
-```
-
-To modify and save the data
+## Example
 
 ```py
-d.number = 20
-d.lista = [2,3,4]
-d.save()
+from classdb import key
+from classdb.sqlite import sqlitedb, SqliteReader
+
+@sqlitedb()
+class Demo:
+    name: key.str
+    number: int
+
+data = Demo(name="john", number= 1)
+print(data) # Demo(name: john, number: 1)
+
+data.number = 10
+print(data) # Demo(name: john, number: 10)
+
+print(data.match()) # False
+data.save()
+print(data.match()) # True
 ```
+
+<br />
+
+## Development:
+
+Install the package as local development
+
+```
+python -m pip install --editable .
+```
+
+TODO: Create env and requirements
+https://packaging.python.org/en/latest/tutorials/packaging-projects/
+https://www.seanh.cc/2022/05/21/publishing-python-packages-from-github-actions/
+
+<br />
+
+## Planned
+
+-   sqlite (currently working on)
+-   csv file
+-   json file
+-   MySQL
