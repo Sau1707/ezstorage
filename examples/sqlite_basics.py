@@ -6,10 +6,11 @@ class Demo:
     name: key.str
     number: int
 
-data = Demo(name="example", number= 100)
-print(data) # Demo(name: example, number: 100)
+data = Demo(name="john", number= 1)
 data.save()
+data.number = 10
+print(data) # Demo(name: john, number: 10)
+data.load()
+print(data) # Demo(name: john, number: 1)
 
-data = Demo("example")
-print(data) # Demo(name: example, number: 100)
 

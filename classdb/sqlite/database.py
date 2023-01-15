@@ -99,6 +99,13 @@ class SQLite3:
             cursor.execute(query, values)
             self.connector.commit()
 
+    # Remove
+    def remove(self, table_name, key_name, key_value):
+        with self as cursor:
+            cursor.execute(f'DELETE FROM {table_name} WHERE {key_name} = ?', (key_value,))
+            self.connector.commit()
+
+
     # read all the content of the table
     def readTable(self, table_name, count=-1):
         with self as cursor:
