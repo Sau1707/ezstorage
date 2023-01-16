@@ -1,5 +1,5 @@
-from classdb import key
-from classdb.sqlite import sqlitedb
+from ezstorage import key
+from ezstorage.sqlite import sqlitedb
 
 @sqlitedb()
 class TestStr:
