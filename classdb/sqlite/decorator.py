@@ -1,6 +1,3 @@
-# import libraries
-import json, ast
-
 # Import util
 from ..costants import KEYS, SQLITE_KEYWORDS
 from .util import getDefaultValue, createSchema
@@ -15,15 +12,17 @@ def sqlitedb(db="data.db"):
                 if field_name.upper() in SQLITE_KEYWORDS:
                     raise ValueError(f"The key with name {field_name} is now allowed in a sqlite database")
                 if field_type in KEYS:
-                    if key: raise ValueError("Only one key type is allowed")
+                    if key: 
+                        raise ValueError("Only one key type is allowed")
                     key = field_name
                 if field_name in kwargs:
-                    value = kwargs.get(field_name)
-                    setattr(self, field_name, value)
+                    setattr(self, field_name, kwargs.get(field_name))
                 else:
                     setattr(self, field_name, getDefaultValue(field_type))
-            if not key: raise ValueError("Key of the record missing")
-            # Check and updathe the schema the first time the class is created
+            if not key: 
+                raise ValueError("Key of the record missing")
+
+            # Check and update the schema the first time the class is created
             if not hasattr(cls, "schema_attributes"):
                 schema = createSchema(self.__annotations__)
                 # Connect to the database
@@ -31,12 +30,12 @@ def sqlitedb(db="data.db"):
                 # Inizialize the db, check if the schema are compatible
                 cls.connector.setup(cls.__name__, schema)
                 cls.schema_attributes = [field_name for field_name, _ in self.__annotations__.items()]
+
             # If a parameter is given, load from the database with that id
             if len(args) == 1:
                 setattr(self, key, args[0])
                 self.key_field_name = key
                 self.load()
-                pass # Load from database with that id
             else:
                 self.key_field_name = key
 
@@ -52,6 +51,9 @@ def sqlitedb(db="data.db"):
                 values += f"{val}: {getattr(self, val)}, "
             values = values.rstrip(", ")
             return f"{cls.__name__}({values})"
+
+        def __dict__(self):
+            pass
 
         # Prevent overwrite of key field
         default_setter = cls.__setattr__
@@ -71,6 +73,9 @@ def sqlitedb(db="data.db"):
             self._match_db = True
 
         def load(self):
+            '''
+                Load the content of the database entry to the class
+            '''
             data = cls.connector.load(cls.__name__, self.key_field_name, getattr(self, self.key_field_name), self.schema_attributes)
             for key, value in data.items():
                 if key == self.key_field_name: continue
@@ -99,6 +104,7 @@ def sqlitedb(db="data.db"):
         cls.remove = remove
         cls.match = match
         cls.__filename__ = db
+        cls._classdb_type = "sqlite"
 
         return cls
     return decorator

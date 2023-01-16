@@ -1,3 +1,4 @@
+```
 from classdb import key, Reader
 from classdb.sqlite import sqlitedb, SqliteReader
 
@@ -17,3 +18,5 @@ r = Reader(Demo)
 all = r.readAll()
 print(all)
 
+
+```
