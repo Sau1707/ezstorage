@@ -31,13 +31,33 @@ print(data.match()) # True
 
 ## Development:
 
-Install the package as local development
+Create virtual enviroment:
+
+```
+python -m venv env
+```
+
+And start it:
+
+```
+source env/bin/activate # Linux
+env\Scripts\activate # Window
+```
+
+If you're using visual studio code, see [this](https://stackoverflow.com/questions/56199111/visual-studio-code-cmd-error-cannot-be-loaded-because-running-scripts-is-disabl/67420296#67420296) if you get the error: `cannot be loaded because running scripts is disabled on this system`
+
+Install the depencies
+
+```
+
+```
+
+And the package as local development
 
 ```
 python -m pip install --editable .
 ```
 
-TODO: Create env and requirements
 https://packaging.python.org/en/latest/tutorials/packaging-projects/
 https://www.seanh.cc/2022/05/21/publishing-python-packages-from-github-actions/
 
