@@ -3,6 +3,7 @@ import sqlite3, threading, ast
     The first time the class is called, connect to the sql database
     Use thrade lock since sqlite is single thread
 '''
+
 class SQLite3:
     connector = None
     lock = threading.Lock()

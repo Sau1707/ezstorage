@@ -12,43 +12,70 @@ Usefull to ealy read, write, edit and seach data in a sqlite database
     -   [Remove](#remove)
     -   [Match](#match)
     -   [Load](#load)
+-   [Reader](#reader)
 
 <br />
 
 ## Get started
 
-import `classdb.sqlite`
-
-```ps
-from classdb.sqlite import sqlitedb
+```py
+import ezstorage as ez
 ```
 
-`sqlitedb` is a python decorator for a class and can be use as follow:
+`ez.sqlite()` is a python decorator for a class and can be use as follow:
 
-```ps
-@sqlitedb()
+```py
+@ez.sqlite()
 class Demo:
-    name: key.str
-    number: int
+    t_key: ez.key.str
+    # or t_key: ez.key.int
+    t_number: int
+    t_decimal: float
+    t_string: str
+    t_truth: bool
+    t_array: list
+    t_object: dict
+    t_group: tuple
 ```
 
-In this case we refer to a table `Demo` with 2 colums, key and number.
+Where the name of the class rappresent the database table name and the attribures it's a column in that table. Each attribure has a specific type in the sqlite database, if a type doesn't exist it will be stored as string and converted back when the data is loaded
 
-> See [TYPES](TYPES.md) for details about types
-
-<br />
+```python
+- int: INTEGER
+- float: REAL
+- str: TEXT
+- bool: INTEGER
+- list: TEXT
+- dict: TEXT
+- tuple: TEXT
+- key.int: INTEGER PRIMARY KEY
+- key.str: TEXT PRIMARY KEY
+```
 
 The database name can be passed as a props
 
 ```py
-@sqlitedb("file.db")
+@ez.sqlite("file.db")
 ```
 
 If no database is passed, the default one will be used `data.db`
 
+> Note: The first time the class is initiated, it will check that the database structure it's the correct one, if the table don't exist it will create one and if the table has a diffrent schema it will be update to match the class types.
+
+> Note: Database migration are planned but not implemented yet. By changing the table it will erase the entire content.
+
 <br />
 
 ## Usage
+
+Let's consider an example
+
+```py
+@ez.sqlite()
+class Demo:
+    name: ez.key.str
+    number: int
+```
 
 Once the class defined, it can be use as follow
 
@@ -58,13 +85,13 @@ print(data) # Demo(name: example, number: 100)
 data.save()
 ```
 
-This will create a entry in the database, with key: "example" and number: 100.
+This will create a entry in the table "Demo", with key: "example" and number: 100.
 
 |     |  Name   | Number |
 | :-: | :-----: | :----: |
 | #1  | example |  100   |
 
-> Note: The first time the class is initiated, it will check that the database structure it's the correct one, if the table don't exist it will create one and if the table has a diffrent schema it will be update to match the class types.
+>
 
 If a entry in the database alreay exist, can be get by passing it's key:
 
@@ -137,7 +164,3 @@ print(data) # Demo(name: john, number: 1)
 ```
 
 In this case the number has been updated but the class was not saved into the database. The load operation loaded the entry of the database and overwrite the class attributes
-
-<br />
-
-## Reader

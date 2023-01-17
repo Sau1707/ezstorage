@@ -1,4 +1,4 @@
-# Class db
+# EzStorage
 
 The goal of the package is to make it as easy as possible to load and save data for small projects.
 
@@ -9,10 +9,9 @@ See [Documentation](/docs/README.md) for all the technical informations.
 ## Example
 
 ```py
-from classdb import key
-from classdb.sqlite import sqlitedb, SqliteReader
+import ezstorage as ez
 
-@sqlitedb()
+@ez.sqlite()
 class Demo:
     name: key.str
     number: int
@@ -46,6 +45,8 @@ https://www.seanh.cc/2022/05/21/publishing-python-packages-from-github-actions/
 
 ## Planned
 
+-   sqlite:
+    -   key.uuid
 -   sqlite (currently working on)
 -   csv file
 -   json file

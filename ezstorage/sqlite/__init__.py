@@ -1,2 +1,2 @@
-from .decorator import sqlitedb
+from .decorator import sqlite
 from .reader import SqliteReader

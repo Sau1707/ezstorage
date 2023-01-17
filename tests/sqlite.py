@@ -1,9 +1,8 @@
-from ezstorage import key
-from ezstorage.sqlite import sqlitedb
+import ezstorage as ez
 
-@sqlitedb()
+@ez.sqlite()
 class TestStr:
-    test_key: key.str
+    test_key: ez.key.str
     test_number: int
     test_decimal: float
     test_string: str

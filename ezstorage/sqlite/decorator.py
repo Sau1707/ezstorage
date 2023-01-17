@@ -3,7 +3,7 @@ from ..costants import KEYS, SQLITE_KEYWORDS
 from .util import getDefaultValue, createSchema
 from .database import SQLite3
 
-def sqlitedb(db="data.db"):
+def sqlite(db="data.db"):
     def decorator(cls):
         def __init__(self, *args, **kwargs):
             # Inizialize the values with the default of each type, extract key
