@@ -53,7 +53,10 @@ def sqlite(db="data.db"):
             return f"{cls.__name__}({values})"
 
         def __dict__(self):
-            pass
+            obj = {}
+            for val in self.schema_attributes:
+                obj[val] = getattr(self, val)
+            return obj
 
         # Prevent overwrite of key field
         default_setter = cls.__setattr__
@@ -63,6 +66,9 @@ def sqlite(db="data.db"):
             if __name != "_match_db":
                 self._match_db = False
             default_setter(self, __name, __value)
+
+        def __getitem__(self, item):
+            return getattr(self, item)
 
         def save(self):
             '''
@@ -99,6 +105,7 @@ def sqlite(db="data.db"):
         cls.__str__ = __str__
         cls.__repr__ = __repr__
         cls.__setattr__ = __setattr__
+        cls.__getitem__ = __getitem__
         cls.save = save
         cls.load = load
         cls.remove = remove

@@ -1,5 +1,5 @@
 ## Docs
 
-This is the documentation of the package `ezstorage``
+This is the documentation of the package `ezstorage`
 
 -   [Sqlite](SQLITE.md)

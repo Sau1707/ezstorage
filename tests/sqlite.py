@@ -12,17 +12,17 @@ class TestStr:
     test_group: tuple
 
 testStr = TestStr("test_key")
-print(testStr)
-testStr.test_number = 100
-testStr.test_decimal = 10.1
-testStr.test_string = "test"
-testStr.test_truth = True
-testStr.test_array = [1,2]
-testStr.test_object = {"test": 1}
-testStr.test_group= ("1", "2", "3")
-print(testStr)
+# testStr.test_number = 100
+# testStr.test_decimal = 10.1
+# testStr.test_string = "test"
+# testStr.test_truth = True
+# testStr.test_array = [1,2]
+# testStr.test_object = {"test": 1}
+# testStr.test_group= ("1", "2", "3")
 testStr.save()
 
 testStr1 = TestStr("test_key")
+print(dict(testStr1))
+print(vars(testStr1))
 print(testStr1)
 

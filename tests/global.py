@@ -7,8 +7,8 @@ class Demo:
 
 data = Demo(name="foo", number= 1)
 data.save()
-data = Demo(name="john", number= 1)
-data.save()
+
+print(data["name"])
 
 
 r = ez.Reader(Demo)
