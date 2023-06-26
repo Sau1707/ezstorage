@@ -1,6 +1,7 @@
+__pycache__/
+*.egg-info/
+
+.venv/
+venv/
 dist/
 
-__pycache__/
-
-data.db
-env/
