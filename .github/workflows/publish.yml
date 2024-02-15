@@ -15,12 +15,7 @@ jobs:
                   fetch-depth: 0
 
             - name: Bump version
-              uses: apowis/pyproject-bump-version@v0.0.1
-              with:
-                  file_to_bump: './pyproject.toml'
-                  bump_type: 'minor'
-                  main_branch: 'main'
-                  python_version: '3.10'
+              run: python3 -m pip install toml && python3 version.py
 
             - name: Install dependencies and build
               run: python3 -m pip install --upgrade build && python3 -m build
