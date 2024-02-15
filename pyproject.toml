@@ -1,7 +1,7 @@
 [project]
 name = "ezstorages"
 description = "Easy storage handler"
-version = "0.0.2"
+version = "0.0.4"
 dependencies = []
 requires-python = ">= 3.8"
 readme = "README.md"
