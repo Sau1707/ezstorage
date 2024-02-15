@@ -1,6 +1,17 @@
-[build-system]
-requires = [
-    "setuptools>=42",
-    "wheel"
+[project]
+name = "ezstorages"
+description = "Easy storage handler"
+version = "0.0.1"
+authors = [
+    { name = "Sau1707" }
 ]
+
+dependencies = [
+
+]
+
+license = { file = "LICENSE" }
+
+[build-system]
+requires = ["setuptools>=42", "wheel"]
 build-backend = "setuptools.build_meta"
