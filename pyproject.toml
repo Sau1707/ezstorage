@@ -11,7 +11,9 @@ dependencies = [
 ]
 
 license = { file = "LICENSE" }
+requires-python = ">= 3.8"
+readme = "README.md"
 
 [build-system]
-requires = ["setuptools>=42", "wheel"]
+requires = ["setuptools >= 61.0"]
 build-backend = "setuptools.build_meta"
