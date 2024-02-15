@@ -1,7 +1,10 @@
-name: Publish to PyPI.org
+name: Update PyPI
+
 on:
-    release:
-        types: [published]
+    push:
+        branches:
+            - main
+
 jobs:
     pypi:
         runs-on: ubuntu-latest
