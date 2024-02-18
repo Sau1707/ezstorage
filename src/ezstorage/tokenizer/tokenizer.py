@@ -117,7 +117,7 @@ class LambdaTokenizer:
                 try:
                     element = self.run_code_in_frame(elements[0])
                     assert issubclass(element, Table), f"Class {elements[0]} is not a subclass of Table"
-                    tokens.append(Token(token, TokenTypes.TABLE))
+                    tokens.append(Token(elements[1], element))
                     continue
                 except AssertionError or KeyError:
                     pass

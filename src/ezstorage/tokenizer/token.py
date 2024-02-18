@@ -1,4 +1,6 @@
+import inspect
 from .types import TokenTypes
+from ..table import Table
 
 
 class Token:
@@ -6,7 +8,8 @@ class Token:
     COMPARISON = ["<", ">", "<=", ">=", "==", "!=", "in", "not in"]
     PARENTHESES = ["(", ")"]
 
-    def __init__(self, value: str, token_type: str):
+    def __init__(self, value: str, token_type: str | Table):
+        # A token can be a Table child class or a token type
         self.value = value
         self.token_type = token_type
 
@@ -59,7 +62,12 @@ class Token:
     # Magic methods
     ##################################################
     def __repr__(self):
+        # Check if the token is a Table child
+        if inspect.isclass(self.token_type) and issubclass(self.token_type, Table):
+            return f"{self.token_type.__name__}('{self.value}')"
+        
         return f"{self.token_type.capitalize()}('{self.value}')"
-    
+  
+        
     def __eq__(self, other: "Token"):
         return self.value == other.value and self.token_type == other.token_type

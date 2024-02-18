@@ -1,4 +1,5 @@
 from typing import TYPE_CHECKING
+from ..tokenizer import LambdaTokenizer
 
 
 if TYPE_CHECKING:    
