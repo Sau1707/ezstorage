@@ -11,6 +11,14 @@ class DbProvider(ABC):
     @dataclass_transform()
     def useTable(self, table_name: str):
         def decorator(cls: "Table"):
+
+            # Check that all the keys have a type and that the value is of the right type
+            for key in cls.__dict__:
+                if key.startswith("__"):
+                    continue
+                assert key in cls.__annotations__, f"Key '{key}' does not have a type in the class {cls.__name__}"
+                assert isinstance(cls.__dict__[key], cls.__annotations__[key]), f"Value {cls.__dict__[key]} is not of type {cls.__annotations__[key]}"
+
             # Assign the table name to the class
             cls.__table__ = table_name
 
@@ -20,11 +28,10 @@ class DbProvider(ABC):
             # Check if the table exists
             if table_name in self.__tables__:
                 cls.__exist__ = True
-                cls.__schema__ = self.get_schema(cls)
+                cls.__schema__ = self._get_schema(cls)
 
             # Check that columns have the right type
             for key in cls.__annotations__:
-                print(cls.__schema__)
                 if key in cls.__schema__:
                     msg = f"Column {key} has type {cls.__annotations__[key]} in the class but has type {cls.__schema__[key]} in the database"
                     assert self._convert_type(cls.__annotations__[key]) == cls.__schema__[key],msg
@@ -34,7 +41,7 @@ class DbProvider(ABC):
         return decorator
 
     @abstractmethod
-    def get_schema(self, table) -> dict:
+    def _get_schema(self, table) -> dict:
         """Return the schema of the table"""
 
     @abstractmethod
@@ -56,6 +63,16 @@ class DbProvider(ABC):
     @abstractmethod
     def close(self):
         """Close the connection to the database"""
+
+    @abstractmethod
+    def commit(self):
+        """Commit the changes to the database"""
+    ##########################################
+    # Database operations
+    ##########################################
+    @abstractmethod
+    def _insert(self, table):
+        """Insert a row into the table"""
 
     ##########################################
     # Utility functions

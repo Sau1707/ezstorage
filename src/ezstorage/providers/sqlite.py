@@ -30,10 +30,10 @@ class Sqlite(DbProvider):
         """Close the connection to the database"""
         self.conn.close()
 
-    def get_schema(self, table: "Table") -> dict:
+    def _get_schema(self, table: "Table") -> dict:
         """Return the schema of the table"""
         if not table.__exist__:
-            return False
+            return {}
         
         cursor = self.conn.execute(f"PRAGMA table_info({table.__table__})")
         schema = {row[1]: row[2] for row in cursor.fetchall()}
@@ -53,7 +53,8 @@ class Sqlite(DbProvider):
         self.conn.execute(schema)
         self.conn.commit()
         table.__exist__ = True
-        table.__schema__ = self.get_schema(table)
+        table.__schema__ = self._get_schema(table)
+        self.__tables__.append(table.__table__)
 
     def create_tables(self):
         """Create all the tables"""
@@ -92,11 +93,28 @@ class Sqlite(DbProvider):
             self.conn.execute(f"ALTER TABLE {table.__table__} DROP COLUMN {column}")
             self.conn.commit()
 
+        # Update the schema
+        table.__schema__ = self._get_schema(table)
+
     def update_tables(self):
         """Update all the tables"""
         for table in self.__classes__:
             self.update_table(table)
 
+    def commit(self):
+        """Commit the changes to the database"""
+        self.conn.commit()
+        
+    ##########################################
+    # Database operations
+    ##########################################
+    def _insert(self, obj: dict, table: str):
+        """Insert a row into the table"""
+        columns = ', '.join(obj.keys())
+        values = ', '.join([f"'{value}'" if isinstance(value, str) else str(value) for value in obj.values()])
+        self.conn.execute(f"INSERT INTO {table} ({columns}) VALUES ({values})")
+        # self.conn.commit()
+    
     ##########################################
     # Utility functions
     ##########################################
@@ -105,7 +123,6 @@ class Sqlite(DbProvider):
         assert type in TYPES_SQLITE, f"Type {type} not supported"
         return TYPES_SQLITE[type]
     
-
     def _get_missing_columns(self, table: "Table") -> list:
         """Return the missing columns"""
         return [key for key in table.__annotations__ if key not in table.__schema__]

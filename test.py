@@ -1,5 +1,5 @@
 import time
-from ezstorage import key, Sqlite, Table
+from ezstorage import Sqlite, Table
 
 db = Sqlite('test.db')
 
@@ -7,27 +7,33 @@ db = Sqlite('test.db')
 class User(Table):
     age: int
     name: str
-    ugfu: str
+    test: str = "test"
 
 
 db.create_table(User)
 # db.create_tables()
-
-print(User.__schema__)
-
-db.update_table(User)
-
-db.drop_table(User)
+# db.update_table(User)
+# db.drop_table(User)
 # db.drop_tables()
 
 
-# Make a benchmark for the table creation
-# start_time = time.time()
-# for i in range(1_000_000):
-#     User(name='John', age=25)
-# end_time = time.time()
+# user = User(name='John', age=25)
+# user.save()
 
-# 1.0884144306182861
-# 1.1030092239379883
-# 1.1229956150054932s
-# print(end_time - start_time)
+User.where(c for c in User if c.age > 25) 
+
+
+
+# Make a benchmark for the table creation
+start_time = time.time()
+for i in range(1_000_000):
+    user = User(name='John', age=25)
+    user.save()
+
+db.commit()
+    
+end_time = time.time()
+print(end_time - start_time)
+
+
+

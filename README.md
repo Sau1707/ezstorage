@@ -22,6 +22,8 @@ class TExampleAuto(Table):
     date : datetime
 
 
+
+
 # Create a single or all tables
 db.createTable(TExampleStr)
 db.createTables()
@@ -38,6 +40,18 @@ db.deleteTables()
 # Allow to have multiple databases
 db2 = Sqlite("example2.db")
 
+TExampleStr.select().where(TExampleStr.string == "Hello").execute()
+
 
 
 ```
+
+import dis
+
+class IterableCar(type):
+def **iter**(cls) -> Iterator["Car"]:
+return iter([])
+
+class Car(metaclass=IterableCar):
+name: str
+id: int
