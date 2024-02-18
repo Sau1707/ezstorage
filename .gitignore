@@ -5,3 +5,6 @@ __pycache__/
 venv/
 dist/
 
+
+# Hide all the .db files
+*.db

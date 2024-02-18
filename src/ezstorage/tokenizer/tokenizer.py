@@ -1,10 +1,8 @@
 import re
-import sys
 import inspect
 from typing import Callable
 from .token import Token
 from .types import TokenTypes
-from ..table import Table
 
 
 class LambdaTokenizer:
@@ -116,7 +114,7 @@ class LambdaTokenizer:
                 elements = token.split(".")  
                 try:
                     element = self.run_code_in_frame(elements[0])
-                    assert issubclass(element, Table), f"Class {elements[0]} is not a subclass of Table"
+                    # assert issubclass(element, Table), f"Class {elements[0]} is not a subclass of Table"
                     tokens.append(Token(elements[1], element))
                     continue
                 except AssertionError or KeyError:

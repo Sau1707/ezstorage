@@ -1,4 +1,5 @@
 from typing import TYPE_CHECKING
+from .tokenizer.tokenizer import LambdaTokenizer
 
 if TYPE_CHECKING:
     from .providers.__template__ import DbProvider
@@ -34,17 +35,35 @@ class Table:
         self.__provider__._insert(self.to_dict(), self.__table__)
 
     ##########################################
+    # CQuery database methods
+    ##########################################
+    @classmethod
+    def where(cls, *args, **kwargs):
+        """Return the query"""
+        # If no arguments are passed, select all
+        if not args and not kwargs:
+            query = cls.__provider__._tokens_to_sql([], cls)
+
+        # If the first argument is a lambda function
+        if len(args) == 1 and callable(args[0]):
+            tokens = LambdaTokenizer(args[0]).tokenize()
+            query = cls.__provider__._tokens_to_sql(tokens, cls)
+
+        if not query:
+            return []
+        
+        data = cls.__provider__.execute(query)
+        columns = list(cls.__annotations__.keys())
+        data = [dict(zip(columns, row)) for row in data]
+        return [cls(**row) for row in data]
+
+    ##########################################
     # Magic method
     ##########################################
     def __repr__(self):
         content = ', '.join([f'{key}={getattr(self, key)}' for key in self.__annotations__]) 
         return f"{self.__class__.__name__}({content})"
     
-    def __iter__(self):
-        """Iterate over the values"""
-        obj = self.to_dict()
-        return iter(obj.items())
-
     def __getitem__(self, key):
         """Get the value of the key"""
         assert key in self.__annotations__, f"Key {key} not in table {self.__table__}"

@@ -1,9 +1,10 @@
+import inspect
 from typing import TYPE_CHECKING
-from ..tokenizer import LambdaTokenizer
-
+from ..tokenizer.types import TokenTypes
 
 if TYPE_CHECKING:    
-    from ..table import Table   
+    from ..table import Table
+    from ..tokenizer.token import Token
 
 import sqlite3
 from .__template__ import DbProvider
@@ -16,7 +17,6 @@ TYPES_SQLITE = {
 }
 
 
-
 class Sqlite(DbProvider):
     def __init__(self, path: str):
         self.path = path
@@ -27,10 +27,6 @@ class Sqlite(DbProvider):
         cursor = self.conn.execute("SELECT name FROM sqlite_master WHERE type='table'")
         self.__tables__ = [table[0] for table in cursor.fetchall()]
         
-    def close(self):
-        """Close the connection to the database"""
-        self.conn.close()
-
     def _get_schema(self, table: "Table") -> dict:
         """Return the schema of the table"""
         if not table.__exist__:
@@ -39,9 +35,6 @@ class Sqlite(DbProvider):
         cursor = self.conn.execute(f"PRAGMA table_info({table.__table__})")
         schema = {row[1]: row[2] for row in cursor.fetchall()}
         return schema
-
-    def create_column(self):
-        pass
 
     def create_table(self, table: "Table"):
         """Create the table if it does not exist"""
@@ -57,11 +50,6 @@ class Sqlite(DbProvider):
         table.__schema__ = self._get_schema(table)
         self.__tables__.append(table.__table__)
 
-    def create_tables(self):
-        """Create all the tables"""
-        for table in self.__classes__:
-            self.create_table(table)
-
     def drop_table(self, table: "Table"):
         """Drop the table from the database"""
         if not table.__exist__:
@@ -71,11 +59,6 @@ class Sqlite(DbProvider):
         self.conn.commit()
         table.__exist__ = False
     
-    def drop_tables(self):
-        """Drop all the tables"""
-        for table in self.__classes__:
-            self.drop_table(table)
-
     def update_table(self, table: "Table"):
         """Update the table schema"""
         if not table.__exist__:
@@ -97,15 +80,13 @@ class Sqlite(DbProvider):
         # Update the schema
         table.__schema__ = self._get_schema(table)
 
-    def update_tables(self):
-        """Update all the tables"""
-        for table in self.__classes__:
-            self.update_table(table)
-
     def commit(self):
         """Commit the changes to the database"""
         self.conn.commit()
         
+    def close(self):
+        """Close the connection to the database"""
+        self.conn.close()
     ##########################################
     # Database operations
     ##########################################
@@ -115,7 +96,12 @@ class Sqlite(DbProvider):
         values = ', '.join([f"'{value}'" if isinstance(value, str) else str(value) for value in obj.values()])
         self.conn.execute(f"INSERT INTO {table} ({columns}) VALUES ({values})")
         # self.conn.commit()
-    
+
+    def execute(self, query: str):
+        """Select the table from the database"""
+        cursor = self.conn.execute(query)
+        return cursor.fetchall()
+
     ##########################################
     # Utility functions
     ##########################################
@@ -136,6 +122,60 @@ class Sqlite(DbProvider):
         """Return the changed columns"""
         return [key for key in table.__annotations__ if key in table.__schema__ and table.__schema__[key] != self._convert_type(table.__annotations__[key])]
     
+    def _tokens_to_sql(self, tokens: list["Token"], table: "Table") -> str:
+        """Convert the token to a sql string"""
+        # Get the table order of elements
+        columns = list(table.__annotations__.keys())
+        query = "SELECT"
+        for column in columns:
+            query += " %s," % column
+        query = query[:-1] + " FROM %s" % table.__table__
+
+        if not tokens:
+            return query
+        else:
+            query += " WHERE"
+
+        for token in tokens:
+            query += " "
+            print(token)
+            if inspect.isclass(token.token_type):
+                query += "%s" % token.value
+                continue
+            
+            match token.token_type:
+                case TokenTypes.AND:
+                    query += "AND"
+                case TokenTypes.OR:
+                    query += "OR"
+                case TokenTypes.OPEN_PARENTHESIS:
+                    query += "("
+                case TokenTypes.CLOSE_PARENTHESIS:
+                    query += ")"
+                case TokenTypes.LESS_THAN:
+                    query += "<"
+                case TokenTypes.GREATER_THAN:
+                    query += ">"
+                case TokenTypes.LESS_THAN_EQUAL:
+                    query += "<="
+                case TokenTypes.GREATER_THAN_EQUAL:
+                    query += ">="
+                case TokenTypes.EQUAL:
+                    query += "="
+                case TokenTypes.NOT_EQUAL:
+                    query += "!="
+                case TokenTypes.IN:
+                    query += "IN"
+                case TokenTypes.NOT_IN:
+                    query += "NOT IN"
+                case TokenTypes.CONSTANT:
+                    query += "'%s'" % token.value
+                
+                case Token:
+                    query += f" {token.value}"
+
+        return query
+
     ##########################################
     # Magic methods
     ##########################################

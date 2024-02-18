@@ -1,4 +1,6 @@
 from abc import ABC, abstractmethod
+from dataclasses import dataclass
+
 from typing import dataclass_transform, TYPE_CHECKING
 if TYPE_CHECKING:
     from ..table import Table
@@ -11,6 +13,8 @@ class DbProvider(ABC):
     @dataclass_transform()
     def useTable(self, table_name: str):
         def decorator(cls: "Table"):
+            # Apply the dataclass decorator
+            cls = dataclass(cls)
 
             # Check that all the keys have a type and that the value is of the right type
             for key in cls.__dict__:
@@ -48,31 +52,47 @@ class DbProvider(ABC):
     def create_table(self, table):
         """Create a table in the database"""
 
-    @abstractmethod
     def create_tables(self):
         """Create the table in the database"""
+        for table in self.__classes__:
+            self.create_table(table)
 
     @abstractmethod
-    def drop_tables(self):
+    def drop_table(self, table):
         """Drop the table from the database"""
 
+    def drop_tables(self):
+        """Drop the table from the database"""
+        for table in self.__classes__:
+            self.drop_table(table)
+
     @abstractmethod
+    def update_table(self, table):
+        """Update the table schema in the database"""
+
     def update_tables(self):
         """Update the table schema in the database"""
+        for table in self.__classes__:
+            self.update_table(table)
+
+    @abstractmethod
+    def commit(self):
+        """Commit the changes to the database"""
 
     @abstractmethod
     def close(self):
         """Close the connection to the database"""
 
-    @abstractmethod
-    def commit(self):
-        """Commit the changes to the database"""
     ##########################################
     # Database operations
     ##########################################
     @abstractmethod
-    def _insert(self, table):
+    def _insert(self, obj, table):
         """Insert a row into the table"""
+
+    @abstractmethod
+    def execute(self, query):
+        """Select the table from the database"""
 
     ##########################################
     # Utility functions
@@ -93,6 +113,9 @@ class DbProvider(ABC):
     def _get_changed_columns(self, table) -> list:
         """Return the changed columns"""
 
+    @abstractmethod
+    def _tokens_to_sql(self, tokens, table) -> str:
+        """Convert the token to a sql string"""
     ##########################################
     # Magic methods
     ##########################################
