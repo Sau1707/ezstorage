@@ -22,6 +22,7 @@ class Sqlite(DbProvider):
         self.path = path
         self.name = path.split("/")[-1]
         self.conn = sqlite3.connect(path)
+        self.cursor = None
 
         # Fetch the existing tables
         cursor = self.conn.execute("SELECT name FROM sqlite_master WHERE type='table'")
@@ -99,6 +100,8 @@ class Sqlite(DbProvider):
 
     def execute(self, query: str):
         """Select the table from the database"""
+        if self.cursor:
+            self.cursor.execute(query)
         cursor = self.conn.execute(query)
         return cursor.fetchall()
 
@@ -181,3 +184,18 @@ class Sqlite(DbProvider):
     ##########################################
     def __del__(self):
         self.close()
+
+    def __enter__(self):
+        self.cursor = self.conn.cursor()
+        return self.cursor
+    
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if exc_type or exc_val or exc_tb:
+            # If there was an exception, rollback any changes
+            self.conn.rollback()
+        else:
+            # Otherwise, commit the changes
+            self.conn.commit()
+
+        if self.cursor:
+            self.cursor.close()

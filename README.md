@@ -64,3 +64,34 @@ print(cars)
 df = pd.DataFrame(users)
 print(df)
 ```
+
+## Types
+
+-   [ ] int
+-   [ ] float
+-   [ ] str
+-   [ ] bool
+-   [ ] datetime
+-   [ ] date
+-   [ ] time
+-   [ ] timedelta
+-   [ ] list
+-   [ ] dict
+-   [ ] set
+-   [ ] tuple
+-   [ ] enum
+-   [ ] json
+-   [ ] bytes
+-   [ ] bytearray
+-   [ ] uuid
+-   [ ] Decimal
+-   [ ] Any
+-   [ ] Union
+
+## Providers
+
+-   [ ] Excel
+-   [ ] Sqlite
+-   [ ] Microsoft Access
+-   [ ] MySQL
+-   [ ] PostgreSQL

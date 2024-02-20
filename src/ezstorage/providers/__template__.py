@@ -5,8 +5,11 @@ from typing import dataclass_transform, TYPE_CHECKING
 if TYPE_CHECKING:
     from ..table import Table
 
-# Abstract class for the provider
 class DbProvider(ABC):
+    """
+        Abstract class for the database provider
+        Each provider extend this class and implement the methods that are provider specific
+    """
     __tables__ = []
     __classes__ = []
 
@@ -116,9 +119,18 @@ class DbProvider(ABC):
     @abstractmethod
     def _tokens_to_sql(self, tokens, table) -> str:
         """Convert the token to a sql string"""
+
     ##########################################
     # Magic methods
     ##########################################
     @abstractmethod
     def __del__(self):
         """Close the connection to the database"""
+
+    @abstractmethod
+    def __enter__(self):
+        """Enter the context"""
+
+    @abstractmethod
+    def __exit__(self, exc_type, exc_value, traceback):
+        """Exit the context"""
